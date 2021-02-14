@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import MainPage from "./MainPage";
+import Sidebar from "./Sidebar";
+import colors from "./colors";
 
-function App() {
+const sidebarWidth = "240px";
+
+const initialAppState = {
+  page: "home",
+};
+
+const App = () => {
+  const [clientState, setClientState] = useState(initialAppState);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "stretch",
+        backgroundColor: colors.bg,
+        color: colors.text,
+      }}
+    >
+      <span
+        style={{
+          width: sidebarWidth,
+        }}
+      >
+        <Sidebar
+          selectPlanet={(id) => setClientState({ page: "planet", id })}
+        />
+      </span>
+      <MainPage page={clientState.page} id={clientState.id} />
     </div>
   );
-}
+};
 
 export default App;

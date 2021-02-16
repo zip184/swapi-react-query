@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { sortByProp } from "./utils";
 
 const getLastId = (url) => {
@@ -6,7 +6,7 @@ const getLastId = (url) => {
   return +parts[parts.length - 1];
 };
 
-const fetchPlanetById = (planetId) => () => {
+const fetchPlanetById = (planetId) => {
   const mapPlanetId = (planet) => ({
     planetId: getLastId(planet.url),
     ...planet,
@@ -39,54 +39,33 @@ const fetchPaged = async (uri) => {
 };
 
 export const usePlanets = () => {
-  const getPlanets = () => fetchPaged("/planets");
-
   const mapPlanetId = (planet) => ({
     planetId: getLastId(planet.url),
     ...planet,
   });
 
-  const [planets, setPlanets] = useState();
+  const { data } = useQuery("planets", () =>
+    fetchPaged("/planets").then((res) =>
+      sortByProp(res.map(mapPlanetId), "name")
+    )
+  );
 
-  useEffect(() => {
-    if (!planets) {
-      getPlanets().then((res) =>
-        setPlanets(sortByProp(res.map(mapPlanetId), "name"))
-      );
-    }
-  }, [planets]);
-
-  return planets;
-};
-
-export const usePlanet = (planetId) => {
-  const [planet, setPlanet] = useState(null);
-
-  useEffect(() => {
-    if (!planet) {
-      fetchPlanetById(planetId).then(setPlanet);
-    }
-  }, [planet, planetId]);
-
-  useEffect(() => {
-    if (planet && planetId !== planet.planetId) {
-      setPlanet(null);
-    }
-  }, [planet, planetId]);
-
-  return planet;
+  return data;
 };
 
 export const usePerson = (personId) => {
-  const [person, setPerson] = useState(null);
+  const fetchPerson = () =>
+    fetch("/people/" + personId).then((res) => res.json());
 
-  useEffect(() => {
-    if (!person) {
-      fetch("/people/" + personId)
-        .then((res) => res.json())
-        .then(setPerson);
-    }
-  }, [person, personId]);
+  const { data } = useQuery(["person", personId], fetchPerson);
 
-  return person;
+  return data;
+};
+
+export const usePlanet = (planetId) => {
+  const fetchPlanet = () => fetchPlanetById(planetId);
+
+  const { data } = useQuery(["planet", planetId], fetchPlanet);
+
+  return data;
 };

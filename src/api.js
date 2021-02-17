@@ -1,26 +1,9 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { sortByProp } from "./utils";
 
 const getLastId = (url) => {
   const parts = url.split("/").filter((p) => p.length > 0);
   return +parts[parts.length - 1];
-};
-
-const fetchPlanetById = (planetId) => {
-  const mapPlanetId = (planet) => ({
-    planetId: getLastId(planet.url),
-    ...planet,
-  });
-
-  const mapResidentIds = (planet) => ({
-    ...planet,
-    residentIds: planet.residents.map(getLastId),
-  });
-
-  return fetch("/planets/" + planetId)
-    .then((res) => res.json())
-    .then(mapPlanetId)
-    .then(mapResidentIds);
 };
 
 const fetchPaged = async (uri) => {
@@ -38,18 +21,23 @@ const fetchPaged = async (uri) => {
   return thisPage;
 };
 
-export const usePlanets = () => {
+const fetchPlanets = () => {
   const mapPlanetId = (planet) => ({
     planetId: getLastId(planet.url),
     ...planet,
   });
 
-  const { data } = useQuery("planets", () =>
-    fetchPaged("/planets").then((res) =>
-      sortByProp(res.map(mapPlanetId), "name")
-    )
-  );
+  const mapResidentIds = (planet) => ({
+    ...planet,
+    residentIds: planet.residents.map(getLastId),
+  });
 
+  return fetchPaged("/planets").then((planets) =>
+    sortByProp(planets.map(mapPlanetId).map(mapResidentIds), "name")
+  );
+};
+export const usePlanets = () => {
+  const { data } = useQuery("planets", fetchPlanets);
   return data;
 };
 
@@ -63,9 +51,12 @@ export const usePerson = (personId) => {
 };
 
 export const usePlanet = (planetId) => {
-  const fetchPlanet = () => fetchPlanetById(planetId);
+  const queryClient = useQueryClient();
 
-  const { data } = useQuery(["planet", planetId], fetchPlanet);
+  const { data } = useQuery(["planet", planetId], fetchPlanets, {
+    initialData: () =>
+      queryClient.getQueryData("planets")?.find((p) => p.planetId === planetId),
+  });
 
   return data;
 };

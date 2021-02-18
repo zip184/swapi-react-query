@@ -21,42 +21,53 @@ const fetchPaged = async (uri) => {
   return thisPage;
 };
 
-const fetchPlanets = () => {
-  const mapPlanetId = (planet) => ({
-    planetId: getLastId(planet.url),
-    ...planet,
-  });
+// Planets
 
-  const mapResidentIds = (planet) => ({
-    ...planet,
-    residentIds: planet.residents.map(getLastId),
-  });
+const mapPlanetId = (planet) => ({
+  planetId: getLastId(planet.url),
+  ...planet,
+});
 
-  return fetchPaged("/planets").then((planets) =>
+const mapResidentIds = (planet) => ({
+  ...planet,
+  residentIds: planet.residents.map(getLastId),
+});
+
+const fetchPlanets = () =>
+  console.log("fetch planets") ||
+  fetchPaged("/planets").then((planets) =>
     sortByProp(planets.map(mapPlanetId).map(mapResidentIds), "name")
   );
-};
+
+const fetchPlanet = (planetId) =>
+  console.log("fetch planet", planetId) ||
+  fetch(`/planets/${planetId}/`)
+    .then((res) => res.json())
+    .then((p) => mapPlanetId(mapResidentIds(p)));
+
 export const usePlanets = () => {
   const { data } = useQuery("planets", fetchPlanets);
-  return data;
-};
-
-export const usePerson = (personId) => {
-  const fetchPerson = () =>
-    fetch("/people/" + personId).then((res) => res.json());
-
-  const { data } = useQuery(["person", personId], fetchPerson);
-
   return data;
 };
 
 export const usePlanet = (planetId) => {
   const queryClient = useQueryClient();
 
-  const { data } = useQuery(["planet", planetId], fetchPlanets, {
+  const { data } = useQuery(["planet", planetId], () => fetchPlanet(planetId), {
     initialData: () =>
       queryClient.getQueryData("planets")?.find((p) => p.planetId === planetId),
   });
+
+  return data;
+};
+
+// People
+
+export const usePerson = (personId) => {
+  const fetchPerson = () =>
+    fetch("/people/" + personId).then((res) => res.json());
+
+  const { data } = useQuery(["person", personId], fetchPerson);
 
   return data;
 };

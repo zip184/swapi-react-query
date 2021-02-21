@@ -1,13 +1,17 @@
 import { usePlanets } from "./api";
 import Header from "./ui/Header";
 
-const PlanetList = () => {
+const PlanetListPage = ({ selectPlanet }) => {
   const planets = usePlanets();
 
   let main = "Loading...";
   if (planets) {
     main = planets.map((planet) => (
-      <Header key={planet.name} rank={2}>
+      <Header
+        key={planet.name}
+        rank={2}
+        onClick={() => selectPlanet(planet.planetId)}
+      >
         {planet.name}
       </Header>
     ));
@@ -30,4 +34,4 @@ const PlanetList = () => {
   );
 };
 
-export default PlanetList;
+export default PlanetListPage;

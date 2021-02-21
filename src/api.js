@@ -34,13 +34,11 @@ const mapResidentIds = (planet) => ({
 });
 
 const fetchPlanets = () =>
-  console.log("fetch planets") ||
   fetchPaged("/planets").then((planets) =>
     sortByProp(planets.map(mapPlanetId).map(mapResidentIds), "name")
   );
 
 const fetchPlanet = (planetId) =>
-  console.log("fetch planet", planetId) ||
   fetch(`/planets/${planetId}/`)
     .then((res) => res.json())
     .then((p) => mapPlanetId(mapResidentIds(p)));

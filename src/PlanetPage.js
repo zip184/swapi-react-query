@@ -1,6 +1,7 @@
 import { usePlanet } from "./api";
 import Header from "./ui/Header";
-import Character from "./Character";
+import FactSheet from "./ui/FactSheet";
+import CharacterLink from "./CharacterLink";
 
 const fields = [
   ["Terrain", "terrain"],
@@ -9,40 +10,8 @@ const fields = [
   ["Population", "population"],
 ];
 
-const Planet = ({ planetId }) => {
+const PlanetPage = ({ planetId }) => {
   const planet = usePlanet(planetId);
-
-  let facts = null;
-  if (planet) {
-    facts = (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Header rank={2}>Planet Facts</Header>
-        {fields.map(([label, key]) => (
-          <div
-            key={key}
-            style={{ display: "flex", flexDirection: "row", margin: "4px" }}
-          >
-            <span
-              style={{
-                width: "130px",
-                fontWeight: "bold",
-                textAlign: "right",
-                paddingRight: "8px",
-              }}
-            >
-              {label}:
-            </span>
-            <span>{planet[key]}</span>
-          </div>
-        ))}
-      </div>
-    );
-  }
 
   let residents = null;
   if (planet) {
@@ -57,7 +26,7 @@ const Planet = ({ planetId }) => {
         <Header rank={2}>Residents</Header>
         {residentIds.length > 0 ? (
           residentIds.map((residentId) => (
-            <Character key={residentId} characterId={residentId} />
+            <CharacterLink key={residentId} characterId={residentId} />
           ))
         ) : (
           <Header rank={3}>None</Header>
@@ -78,7 +47,7 @@ const Planet = ({ planetId }) => {
         }}
       >
         <Header rank={1}>{planet ? planet.name : "Loading..."}</Header>
-        {facts}
+        <FactSheet title="Planet Facts" entity={planet} fields={fields} />
         <br />
         <br />
         {residents}
@@ -87,4 +56,4 @@ const Planet = ({ planetId }) => {
   );
 };
 
-export default Planet;
+export default PlanetPage;

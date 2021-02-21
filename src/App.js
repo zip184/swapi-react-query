@@ -12,6 +12,8 @@ const initialAppState = {
 const App = () => {
   const [clientState, setClientState] = useState(initialAppState);
 
+  const selectPlanet = (id) => setClientState({ page: "planet", id });
+
   return (
     <div
       style={{
@@ -29,11 +31,13 @@ const App = () => {
           width: sidebarWidth,
         }}
       >
-        <Sidebar
-          selectPlanet={(id) => setClientState({ page: "planet", id })}
-        />
+        <Sidebar selectPlanet={selectPlanet} />
       </span>
-      <MainPage page={clientState.page} id={clientState.id} />
+      <MainPage
+        page={clientState.page}
+        id={clientState.id}
+        selectPlanet={selectPlanet}
+      />
     </div>
   );
 };

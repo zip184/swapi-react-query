@@ -1,7 +1,7 @@
 import { usePlanet } from "./api";
 import Header from "./ui/Header";
 import FactSheet from "./ui/FactSheet";
-import CharacterLink from "./CharacterLink";
+import PersonLink from "./PersonLink";
 
 const fields = [
   ["Terrain", "terrain"],
@@ -10,7 +10,7 @@ const fields = [
   ["Population", "population"],
 ];
 
-const PlanetPage = ({ planetId }) => {
+const PlanetPage = ({ planetId, selectPerson }) => {
   const planet = usePlanet(planetId);
 
   let residents = null;
@@ -26,7 +26,11 @@ const PlanetPage = ({ planetId }) => {
         <Header rank={2}>Residents</Header>
         {residentIds.length > 0 ? (
           residentIds.map((residentId) => (
-            <CharacterLink key={residentId} characterId={residentId} />
+            <PersonLink
+              key={residentId}
+              personId={residentId}
+              selectPerson={selectPerson}
+            />
           ))
         ) : (
           <Header rank={3}>None</Header>

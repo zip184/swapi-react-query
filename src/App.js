@@ -12,7 +12,9 @@ const initialAppState = {
 const App = () => {
   const [clientState, setClientState] = useState(initialAppState);
 
+  console.log(clientState);
   const selectPlanet = (id) => setClientState({ page: "planet", id });
+  const selectPerson = (id) => setClientState({ page: "person", id });
 
   return (
     <div
@@ -37,6 +39,7 @@ const App = () => {
         page={clientState.page}
         id={clientState.id}
         selectPlanet={selectPlanet}
+        selectPerson={selectPerson}
       />
     </div>
   );

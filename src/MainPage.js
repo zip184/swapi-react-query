@@ -3,20 +3,21 @@ import PlanetListPage from "./PlanetListPage";
 import PlanetPage from "./PlanetPage";
 import PersonPage from "./PersonPage";
 import SpeciesPage from "./SpeciesPage";
+import FilmPage from "./FilmPage";
 
 const getCurrentPage = (page, id, events) => {
-  const { selectPlanet, selectPerson, selectSpecies } = events;
-
   switch (page) {
     case "planet":
-      return <PlanetPage planetId={id} selectPerson={selectPerson} />;
+      return <PlanetPage planetId={id} {...events} />;
     case "person":
-      return <PersonPage personId={id} selectSpecies={selectSpecies} />;
+      return <PersonPage personId={id} {...events} />;
     case "species":
-      return <SpeciesPage speciesId={id} />;
+      return <SpeciesPage speciesId={id} {...events} />;
+    case "film":
+      return <FilmPage filmId={id} {...events} />;
     case "home":
     default:
-      return <PlanetListPage selectPlanet={selectPlanet} />;
+      return <PlanetListPage {...events} />;
   }
 };
 

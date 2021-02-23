@@ -23,25 +23,22 @@ const fetchPaged = async (uri) => {
 
 // --------------- Planets ---------------
 
-const mapPlanetId = (planet) => ({
+const mapPlanetIds = (planet) => ({
   planetId: getLastId(planet.url),
-  ...planet,
-});
-
-const mapResidentIds = (planet) => ({
-  ...planet,
   residentIds: planet.residents.map(getLastId),
+  filmIds: planet.films.map(getLastId),
+  ...planet,
 });
 
 const fetchPlanets = () =>
   fetchPaged("/planets").then((planets) =>
-    sortByProp(planets.map(mapPlanetId).map(mapResidentIds), "name")
+    sortByProp(planets.map(mapPlanetIds), "name")
   );
 
 const fetchPlanet = (planetId) =>
   fetch(`/planets/${planetId}/`)
     .then((res) => res.json())
-    .then((p) => mapPlanetId(mapResidentIds(p)));
+    .then((p) => mapPlanetIds(p));
 
 export const usePlanets = () => {
   const { data } = useQuery("planets", fetchPlanets);
@@ -81,11 +78,27 @@ export const useSpecies = (speciesId) => {
     fetch("/species/" + speciesId)
       .then((res) => res.json())
       .then((species) => ({
-        // filmIds: species.films.map(getLastId),
+        filmIds: species.films.map(getLastId),
+        personIds: species.people.map(getLastId),
         ...species,
       }));
 
   const { data } = useQuery(["species", speciesId], fetchSpecies);
+
+  return data;
+};
+
+export const useFilm = (filmId) => {
+  const fetchFilm = () =>
+    fetch("/films/" + filmId)
+      .then((res) => res.json())
+      .then((film) => ({
+        personIds: film.characters.map(getLastId),
+        planetIds: film.planets.map(getLastId),
+        ...film,
+      }));
+
+  const { data } = useQuery(["film", filmId], fetchFilm);
 
   return data;
 };

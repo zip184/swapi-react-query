@@ -1,8 +1,8 @@
-import { useSpecies } from "./api";
+import { useSpecies, useFilm, usePerson } from "./api";
 import Header from "./ui/Header";
 import FactSheet from "./ui/FactSheet";
 import EntityPage from "./ui/EntityPage";
-// import EntityList from "./ui/EntityList";
+import EntityList from "./ui/EntityList";
 
 const fields = [
   ["Classification", "classification"],
@@ -14,21 +14,34 @@ const fields = [
   ["Language", "language"],
 ];
 
-const SpeciesPage = ({ speciesId }) => {
+const SpeciesPage = ({ speciesId, selectFilm, selectPerson }) => {
   const species = useSpecies(speciesId);
 
   return (
     <EntityPage>
       <Header rank={1}>{species ? species.name : "Loading..."}</Header>
       <FactSheet title="Species Facts" entity={species} fields={fields} />
-      {/* {species && (
-          <EntityList
-            title="Species"
-            entityIds={person.speciesIds}
-            // selectEntity={selectPerson}
-            useEntity={useSpecies}
-          />
-        )} */}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <EntityList
+          title="Characters"
+          entityIds={species.personIds}
+          selectEntity={selectPerson}
+          useEntity={usePerson}
+        />
+        <EntityList
+          title="Movies"
+          entityIds={species.filmIds}
+          selectEntity={selectFilm}
+          useEntity={useFilm}
+        />
+      </div>
     </EntityPage>
   );
 };

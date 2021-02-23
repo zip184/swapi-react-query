@@ -15,6 +15,7 @@ const App = () => {
   const selectPlanet = (id) => setClientState({ page: "planet", id });
   const selectPerson = (id) => setClientState({ page: "person", id });
   const selectSpecies = (id) => setClientState({ page: "species", id });
+  const selectFilm = (id) => setClientState({ page: "film", id });
 
   return (
     <div
@@ -38,7 +39,7 @@ const App = () => {
       <MainPage
         page={clientState.page}
         id={clientState.id}
-        selectEvents={{ selectPlanet, selectPerson, selectSpecies }}
+        selectEvents={{ selectPlanet, selectPerson, selectSpecies, selectFilm }}
       />
     </div>
   );

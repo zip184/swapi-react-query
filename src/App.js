@@ -12,7 +12,6 @@ const initialAppState = {
 const App = () => {
   const [clientState, setClientState] = useState(initialAppState);
 
-  console.log(clientState);
   const selectPlanet = (id) => setClientState({ page: "planet", id });
   const selectPerson = (id) => setClientState({ page: "person", id });
 

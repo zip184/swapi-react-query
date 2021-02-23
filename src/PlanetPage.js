@@ -1,7 +1,7 @@
-import { usePlanet } from "./api";
+import { usePlanet, usePerson } from "./api";
 import Header from "./ui/Header";
 import FactSheet from "./ui/FactSheet";
-import PersonLink from "./PersonLink";
+import EntityList from "./ui/EntityList";
 
 const fields = [
   ["Terrain", "terrain"],
@@ -12,32 +12,6 @@ const fields = [
 
 const PlanetPage = ({ planetId, selectPerson }) => {
   const planet = usePlanet(planetId);
-
-  let residents = null;
-  if (planet) {
-    const { residentIds } = planet;
-    residents = (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Header rank={2}>Residents</Header>
-        {residentIds.length > 0 ? (
-          residentIds.map((residentId) => (
-            <PersonLink
-              key={residentId}
-              personId={residentId}
-              selectPerson={selectPerson}
-            />
-          ))
-        ) : (
-          <Header rank={3}>None</Header>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div style={{ height: "100%" }}>
@@ -54,7 +28,14 @@ const PlanetPage = ({ planetId, selectPerson }) => {
         <FactSheet title="Planet Facts" entity={planet} fields={fields} />
         <br />
         <br />
-        {residents}
+        {planet && (
+          <EntityList
+            title="Residents"
+            entityIds={planet.residentIds}
+            selectEntity={selectPerson}
+            useEntity={usePerson}
+          />
+        )}
       </div>
     </div>
   );

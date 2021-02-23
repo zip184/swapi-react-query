@@ -2,22 +2,25 @@ import colors from "./colors";
 import PlanetListPage from "./PlanetListPage";
 import PlanetPage from "./PlanetPage";
 import PersonPage from "./PersonPage";
+import SpeciesPage from "./SpeciesPage";
 
 const getCurrentPage = (page, id, events) => {
-  const { selectPlanet, selectPerson } = events;
+  const { selectPlanet, selectPerson, selectSpecies } = events;
 
   switch (page) {
     case "planet":
       return <PlanetPage planetId={id} selectPerson={selectPerson} />;
     case "person":
-      return <PersonPage personId={id} />;
+      return <PersonPage personId={id} selectSpecies={selectSpecies} />;
+    case "species":
+      return <SpeciesPage speciesId={id} />;
     case "home":
     default:
       return <PlanetListPage selectPlanet={selectPlanet} />;
   }
 };
 
-const MainPage = ({ page, id, selectPlanet, selectPerson }) => (
+const MainPage = ({ page, id, selectEvents }) => (
   <div
     style={{
       width: "100%",
@@ -39,7 +42,7 @@ const MainPage = ({ page, id, selectPlanet, selectPerson }) => (
       Star Wars
     </h1>
     <div style={{ height: "80%" }}>
-      {getCurrentPage(page, id, { selectPlanet, selectPerson })}
+      {getCurrentPage(page, id, selectEvents)}
     </div>
   </div>
 );

@@ -21,7 +21,7 @@ const fetchPaged = async (uri) => {
   return thisPage;
 };
 
-// Planets
+// --------------- Planets ---------------
 
 const mapPlanetId = (planet) => ({
   planetId: getLastId(planet.url),
@@ -59,13 +59,33 @@ export const usePlanet = (planetId) => {
   return data;
 };
 
-// People
+// ---------------
 
 export const usePerson = (personId) => {
   const fetchPerson = () =>
-    fetch("/people/" + personId).then((res) => res.json());
+    fetch("/people/" + personId)
+      .then((res) => res.json())
+      .then((person) => ({
+        speciesIds: person.species.map(getLastId),
+        filmIds: person.films.map(getLastId),
+        ...person,
+      }));
 
   const { data } = useQuery(["person", personId], fetchPerson);
+
+  return data;
+};
+
+export const useSpecies = (speciesId) => {
+  const fetchSpecies = () =>
+    fetch("/species/" + speciesId)
+      .then((res) => res.json())
+      .then((species) => ({
+        // filmIds: species.films.map(getLastId),
+        ...species,
+      }));
+
+  const { data } = useQuery(["species", speciesId], fetchSpecies);
 
   return data;
 };

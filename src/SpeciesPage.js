@@ -1,6 +1,7 @@
 import { useSpecies } from "./api";
 import Header from "./ui/Header";
 import FactSheet from "./ui/FactSheet";
+import EntityPage from "./ui/EntityPage";
 // import EntityList from "./ui/EntityList";
 
 const fields = [
@@ -17,19 +18,10 @@ const SpeciesPage = ({ speciesId }) => {
   const species = useSpecies(speciesId);
 
   return (
-    <div style={{ height: "100%" }}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          overflowY: "auto",
-          height: "100%",
-        }}
-      >
-        <Header rank={1}>{species ? species.name : "Loading..."}</Header>
-        <FactSheet title="Species Facts" entity={species} fields={fields} />
-        {/* {species && (
+    <EntityPage>
+      <Header rank={1}>{species ? species.name : "Loading..."}</Header>
+      <FactSheet title="Species Facts" entity={species} fields={fields} />
+      {/* {species && (
           <EntityList
             title="Species"
             entityIds={person.speciesIds}
@@ -37,8 +29,7 @@ const SpeciesPage = ({ speciesId }) => {
             useEntity={useSpecies}
           />
         )} */}
-      </div>
-    </div>
+    </EntityPage>
   );
 };
 

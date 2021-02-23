@@ -5,6 +5,7 @@ const styles = {
   main: {
     display: "flex",
     flexDirection: "column",
+    margin: "20px",
   },
 };
 
